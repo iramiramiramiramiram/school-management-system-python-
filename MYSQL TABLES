@@ -1,0 +1,117 @@
+create table students
+(
+schno int primary key not null auto_increment,
+name char(20) not null,
+DOB date,
+standard int not null,
+section char(3) not null,
+aadharno char(12),
+mother_name char(20),
+father_name char(20),
+guardian char(20),
+phoneno1 char(10),
+phoneno2 char(10),
+address char(50) not null,
+DOA date,
+previousschool char(30) not null, 
+studenttype char(20) not null,
+house char(20),
+subject1 char(15) not null,
+subject2 char(15) not null,
+subject3 char(15) not null,
+subject4 char(15) not null,
+subject5 char(15) not null);
+
+create table teachers
+(
+tid int primary key not null auto_increment,
+name char(25) not null,
+phoneno char(12),
+emailid char(35),
+DOB date,
+fathername char(20) not null,
+spousename char(20),
+address char(40),
+adhaarno char(12),
+DOJ date,
+qualification char(15) not null,
+exp int,
+salary float(10,2),
+department char(10) not null,
+designation char(20) not null,
+subject1 char(20),
+subject2 char(20),
+teachertype char(10) not null);
+
+create table term1
+(
+schno int primary key not null,
+subject1_th int,
+subject1_pl int,
+subject2_th int, 
+subject2_pl int,
+subject3_th int,
+subect3_pl int,
+subject4_th int,
+subject4_pl int,
+subject5_th int,
+subject5_pl int,
+term1_perc int);
+
+create table term2
+(
+schno int primary key not null,
+subject1_th int,
+subject1_pl int,
+subject2_th int, 
+subject2_pl int,
+subject3_th int,
+subect3_pl int,
+subject4_th int,
+subject4_pl int,
+subject5_th int,
+subject5_pl int,
+term2_perc int);
+
+create table halfyearly
+(
+schno int primary key not null,
+subject1_th int,
+subject1_pl int,
+subject2_th int, 
+subject2_pl int,
+subject3_th int,
+subect3_pl int,
+subject4_th int,
+subject4_pl int,
+subject5_th int,
+subject5_pl int,
+halfyearly_perc int);
+
+create table annual
+(
+schno int primary key not null,
+subject1_th int,
+subject1_pr int,
+subject2_th int, 
+subject2_pr int,
+subject3_th int,
+subect3_pr int,
+subject4_th int,
+subject4_pr int,
+subject5_th int,
+subject5_pr int,
+annual_perc int);
+
+
+insert into students values(2223,"Iram Kamdar",'2002-11-02',12,"A",876598761234,"Fatima Kamdar","Dr.Gulam Ali Kamdar","no one",9876543210,9876543211,"BJS Colony",'2007-02-27',"Kabra School","dayscholar","bhawani","English","Physics","Chemistry","Mathematics","Computerscience");
+
+insert into teachers values(12,"Mr.Udhav Dubey",7021543340,"udhavdubey@gmail.com",'1980-11-22',"Mr.XYZ Dubey","Mrs.Dubey","Shastri nagar",987612345678,'2000-04-04',"MCA",0,70000,"Computer","PGT","Computer Science","Information practice","outhouse");
+
+
+
+
+
+
+
+
