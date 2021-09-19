@@ -1,0 +1,501 @@
+import mysql.connector as mysql
+
+def add_students(): #to add students into the database
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+       mycur=mycon.cursor() #creating a cursor
+       
+       name=input("Enter your name:")
+       DOB=input("Enter date of birth(YYYY-MM-DD):")
+       standard=int(input("Enter the standard:"))
+       section=input("Enter the section:")
+       aadharno=input("Enter the UID:")
+       mother_name=input("Enter mother's name:")
+       father_name=input("Enter father's name:")
+       guardian=input("Enter guardian's name:")
+       phoneno1=int(input("Enter phone number:"))
+       phoneno2=int(input("Enter phone number:"))
+       address=input("Enter address:")
+       previousschool=input("Enter the previous school:")
+       studenttype=input("Enter boarder or dayscholar:")
+       house=input("Enter the house:")
+       subject1=input("Enter subject1:")
+       subject2=input("Enter subject2:")
+       subject3=input("Enter subject3:")
+       subject4=input("Enter subject4:")
+       subject5=input("Enter subject5:")
+       sqlquery="insert into students (name,DOB,standard,section,aadharno,mother_name,father_name,guardian,phoneno1,phoneno2,address,DOA,previousschool,studenttype,house,subject1,subject2,subject3,subject4,subject5)values('"+name+"','"+DOB+"',"+str(standard)+",'"+section+"','"+aadharno+"','"+mother_name+"','"+father_name+"','"+guardian+"',"+str(phoneno1)+","+str(phoneno2)+",'"+address+"',curdate(),'"+previousschool+"','"+studenttype+"','"+house+"','"+subject1+"','"+subject2+"','"+subject3+"','"+subject4+"','"+subject5+"')"
+       print("Student added to the database")
+       mycur.execute(sqlquery)
+       mycon.commit()
+       mycon.close()
+    else:("Database is not ready!!:(")
+    
+
+def show_students():  #to show the record of a specific student from the database
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+       mycur=mycon.cursor()  #creating a cursor
+       s=int(input("Enter scholar no. you want to find:"))
+       sqlquery="select * from students where schno ="+str(s)
+       mycur.execute(sqlquery)
+       data=mycur.fetchall()
+       if mycur.rowcount==0:
+           print("NO RECORDS FOUND")
+           mycon.close()
+           return
+       print("~"*60)
+       print("                      STUDENT'S DETAIL                      ")      
+       print("~"*60)
+       for row in data:
+           print("|Student Id             : "+str(row[0]))
+           print("|Student Name           : "+row[1])
+           print("|Student standard       : "+str(row[2]))
+           print("|Student Section        : "+str(row[3]))
+           print("|Student DOB            : "+str(row[4]))
+           print("|Student aadharno       : "+row[5])
+           print("|Student mother's name  : "+row[6])
+           print("|Student father's name  : "+row[7])
+           print("|Student guardian       : "+str(row[8]))
+           print("|Student phoneno1       : "+str(row[9]))
+           print("|Student phoneno2       : "+row[10])
+           print("|Student address        : "+str(row[11]))
+           print("|Student DOA            : "+str(row[12]))
+           print("|Student previousschool : "+row[13])
+           print("|Student studenttype    : "+row[14])
+           print("|Student house          : "+row[15])
+           print("|Student subject1       : "+row[16])
+           print("|Student subject2       : "+row[17])
+           print("|Student subject3       : "+row[18])
+           print("|Student subject4       : "+row[19])
+           print("|Student subject5       : "+row[20])
+           print("~"*60)
+           mycon.commit() 
+           mycon.close()
+
+def update_students():  #to update the records of a specific student.
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+       mycur=mycon.cursor()  #creating a cursor
+       print("~"*30)
+       print("|1.Name                       |")
+       print("|2.Section                    |")
+       print("|3.Guardian                   |")
+       print("|4.Phoneno1                   |")
+       print("|5.Phoneno2                   |")
+       print("|6.Address                    |")
+       print("|7.Studenttype                |")
+       print("|8.House                      |")
+       print("|9.Subject1                   |")
+       print("|10.Subject2                  |")
+       print("|11.Subject3                  |")
+       print("|12.Subject4                  |")
+       print("|13.Subject5                  |")
+    print("~"*30)
+    s=int(input("Enter your scholar no:"))
+    upd=int(input("Enter the choice:"))
+    colname=['name','section','guardian','phoneno1','phoneno2','address','studenttype','house','subject1','subject2','subject3','subject4','subject5']
+
+    if upd in range(1,14):
+        if colname[upd-1]=='phoneno1'or colname[upd-1]=='phoneno2': #if you want to update integer type column
+            upd_i=int(input("Enter the updated value:"))
+            sqlq="UPDATE students SET "+colname[upd-1]+"= "+str(upd_i)+" where schno="+str(s)
+            
+        else:
+             upd_i=input("Enter the updated value:")
+             sqlq="UPDATE students SET "+colname[upd-1]+"= '"+upd_i+"' where schno="+str(s)
+        mycur.execute(sqlq)
+        print("UPDATED SUCCESSFULLY")
+        print("*************************************************")
+        mycon.commit()
+    else:
+        print("INVALID CHOICE, TRY AGAIN!!")
+    mycon.close() 
+        
+            
+    
+          
+
+
+            
+def issue_TC():  #to remove a student from the database.
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor()  #creating a cursor
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+       r=int(input("Enter the schno of the student you want to remove:"))
+       sqlquery1="select * from students where schno ="+str(r)
+       mycur.execute(sqlquery1)
+       data=mycur.fetchall()
+       if mycur.rowcount==1:
+           for row in data:
+               sqlquery1="insert into exstudents(schno,name,DOB,standard,section,aadharno,mother_name,father_name,guardian,phoneno1,phoneno2,address,DOA,previousschool,studenttype,house,subject1,subject2,subject3,subject4,subject5,tc_issue_date) values("+str(row[0])+",'"+str(row[1])+"','"+str(row[2])+"',"+str(row[3])+",'"+str(row[4])+"',"+str(row[5])+",'"+str(row[6])+"','"+str(row[7])+"','"+str(row[8])+"',"+str(row[9])+","+str(row[10])+",'"+str(row[11])+"','"+str(row[12])+"','"+str(row[13])+"','"+str(row[14])+"','"+str(row[15])+"','"+str(row[16])+"','"+str(row[17])+"','"+str(row[18])+"','"+str(row[19])+"','"+str(row[20])+"',curdate())"
+               mycur.execute(sqlquery1)
+           sqlquery2="DELETE from students where schno ="+str(r)
+           mycur.execute(sqlquery2)
+           
+           print("RECORD DELETED")
+           print("*************************************************")
+           mycon.commit()
+       mycon.close()
+    
+def add_teachers():  #to add a teacher into the database
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor()  #creating a cursor
+    if mycon.is_connected()==True: #checking that the connection stablished or not
+        name=input("Enter teacher's name:")
+        phoneno=int(input("Enter phone number:"))
+        emailid=input("Enter email id:")
+        DOB=input("Enter date of birth(YYYY-MM-DD):")
+        fathername=input("Enter father's name:")
+        spousename=input("Enter spouse's name:") 
+        address=input("Enter your address:")
+        adhaarno=int(input("Enter your UID:"))
+        query="select curdate()"
+        mycur.execute(query)
+        data=mycur.fetchall()
+        DOJ=data[0]
+        qualification=input("Enter your qualification:")
+        exp=int(input("Enter your experience as a teacher:"))
+        salary=int(input("Enter the salary:"))
+        department=input("Enter your department:")
+        designation=input("Enter your designation:")
+        subject1=input("Enter your subject1:")
+        subject2=input("Enter your subject2:")
+        teachertype=input("Enter your type:")
+        sqlquery="insert into teachers(name,phoneno,emailid,DOB,fathername,spousename,address,adhaarno,doj,qualification,exp,salary,department,designation,subject1,subject2,teachertype) values("+"'"+name+"',"+str(phoneno)+",'"+emailid+"','"+DOB+"','"+fathername+"','"+spousename+"','"+address+"',"+str(adhaarno)+",curdate(),'"+qualification+"',"+str(exp)+","+str(salary)+",'"+department+"','"+designation+"','"+subject1+"','"+subject2+"','"+teachertype+"')"
+        print("Teacher added to the database")
+        mycur.execute(sqlquery)
+        mycon.commit()
+        mycon.close()
+
+
+
+def show_teachers():  #to show the details of a specific teacher from the database.
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor()  #creating a cursor
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+        t=int(input("Enter tid you want to find:"))
+        sqlquery="select * from teachers where tid ="+str(t) 
+        mycur.execute(sqlquery)
+        data=mycur.fetchall()
+        print("~"*60)
+        print("                     TEACHER'S DETAIL                       ")      
+        print("~"*60)
+        for row in data:
+            print(" Teacher Id            : "+str(row[0]))
+            print(" Teacher Name          : "+row[1])
+            print(" Teacher phoneno       : "+str(row[2]))
+            print(" Teacher emailid       : "+row[3])
+            print(" Teacher DOB           : "+str(row[4]))
+            print(" Teacher father's_name : "+row[5])
+            print(" Teacher Spouse's name : "+row[6])
+            print(" Teacher address       : "+row[7])
+            print(" Teacher adhaarno      : "+str(row[8]))
+            print(" Teacher DOJ           : "+str(row[9]))
+            print(" Teacher qualification : "+row[10])
+            print(" Teacher exp           : "+str(row[11]))
+            print(" Teacher salary        : "+str(row[12]))
+            print(" Teacher department    : "+row[13])
+            print(" Teacher designation   : "+row[14])
+            print(" Teacher subject1      : "+row[15])
+            print(" Teacher subject2      : "+row[16])
+            print(" Teacher teachertype   : "+row[17])
+            print("~"*60)
+            mycon.commit()
+    mycon.close()
+   
+def update_teachers():  #to update records of a specific teacher.
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor()  #creating a cursor
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+         print("~"*30)
+         print("|1.Name                      |")
+         print("|2.Phoneno                   |")
+         print("|3.Emailid                   |")
+         print("|4.Spousename                |")
+         print("|5.Address                   |")
+         print("|6.Salary                    |")  
+         print("|7.Department                |")
+         print("|8.Designation               |")
+         print("|9.Subject1                  |")
+         print("|10.Subject2                 |")
+         print("|11.Teachertype              |")
+         print("~"*30)
+    
+         t=int(input("Enter your teacher's id:"))
+         upd=int(input("Enter the choice:"))
+         colname=['name','phoneno','emailid','spousename','address','salary','department','designation','subject1','subject2','teachertype']
+    
+         if upd in range(1,12): 
+             if colname[upd-1]=='phoneno'or colname[upd-1]=='salary': #if the column name you want to update is of inter type
+                upd_i=int(input("Enter the updated value:"))
+                sqlq="UPDATE teachers SET "+colname[upd-1]+"= "+str(upd_i)+" where tid="+str(t)
+             else:
+                 upd_i=input("Enter the updated value:")
+                 sqlq="UPDATE teachers SET "+colname[upd-1]+"= '"+upd_i+"' where tid="+str(t)
+                 mycur.execute(sqlq)
+                 print("UPDATED SUCCESSFULLY")
+                 print("*************************************************")
+                 mycon.commit()
+                 mycon.close()
+         else:
+             print("INVALID CHOICE, TRY AGAIN!!")
+        
+    
+     
+     
+def issue_TC_teacher():  #to remove the record of a teacher.
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor()  #creating a cursor
+    if mycon.is_connected()==True:  #checking that the connection stablished or not
+       r=int(input("Enter the tid of the teacher you want to remove:"))
+       sqlquery1="select * from teachers where tid ="+str(r)
+       mycur.execute(sqlquery1)
+       data=mycur.fetchall()
+       if mycur.rowcount==1:
+           for row in data:
+               sqlquery1="insert into exteacher(tid,name,phoneno,emailid,DOB,fathername,spousename,address,adhaarno,doj,qualification,exp,salary,department,designation,subject1,subject2,teachertype,tc_issue_date) values("+str(row[0])+",'"+str(row[1])+"',"+str(row[2])+",'"+str(row[3])+"','"+str(row[4])+"','"+str(row[5])+"','"+str(row[6])+"','"+str(row[7])+"',"+str(row[8])+",'"+str(row[9])+"','"+str(row[10])+"',"+str(row[11])+",'"+str(row[12])+"','"+str(row[13])+"','"+str(row[14])+"','"+str(row[15])+"','"+str(row[16])+"','"+str(row[17])+"',curdate())"
+               mycur.execute(sqlquery1)
+           sqlquery2="DELETE from teachers where tid ="+str(r)
+           mycur.execute(sqlquery2)
+           
+           print("RECORD DELETED")
+           print("*************************************************")
+           mycon.commit()
+       mycon.close()
+
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor() #creating a cursor
+    
+    
+    r=int(input("Enter the tid of the teacher you want to remove:"))
+    sqlquery="DELETE from teachers where tid =" +str(r)
+    mycur.execute(sqlquery)
+    mycon.commit()
+    print("RECORD DELETED")
+    print("*************************************************")
+    
+    mycon.close()
+     
+
+def add_marks():  #to add marks of student into the database
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    mycur=mycon.cursor()
+    if mycon.is_connected()==True:  #checking that the connection stab or connection refused by Database Server!!!")
+       print("~"*35)     
+       print("|1.Add marks for term1:           |")
+       print("|2.Add marks for term2:           |")
+       print("|3.Add marks for halfyearly:      |")
+       print("|4.Add marks for annuals:         |")
+       print("~"*35)
+       choice=int(input("Enter your choice:"))
+       if choice==1:
+           schno=int(input("Enter your scholar no.:"))
+           subject1_th=int(input("Enter your subject1 theory marks:"))
+           subject1_pl=int(input("Enter your subject1 practical marks:"))
+           subject1_total=subject1_th+subject1_pl
+           subject2_th=int(input("Enter your subject2 theory marks:"))
+           subject2_pl=int(input("Enter your subject2 practical marks:"))
+           subject2_total=subject2_th+subject2_pl
+           subject3_th=int(input("Enter your subject3 theory marks:"))
+           subject3_pl=int(input("Enter your subject3 practical marks:"))
+           subject3_total=subject3_th+subject3_pl
+           subject4_th=int(input("Enter your subject4 theory marks:"))
+           subject4_pl=int(input("Enter your subject4 practical marks:"))
+           subject4_total=subject4_th+subject4_pl
+           subject5_th=int(input("Enter your subject5 theory marks:"))
+           subject5_pl=int(input("Enter your subject5 practical marks:"))
+           subject5_total=subject5_th+subject5_pl
+           totalmarks=subject1_total+subject2_total+subject3_total+subject4_total+subject5_total
+           term1_perc=totalmarks//5
+           print("Percentage scored in Term1=",term1_perc)
+           sqlquery="insert into term1 value("+str(schno)+","+str(subject1_pl)+","+str(subject1_th)+","+str(subject2_pl)+","+str(subject2_th)+","+str(subject3_pl)+","+str(subject3_th)+","+str(subject4_pl)+","+str(subject4_th)+","+str(subject5_pl)+","+str(subject5_th)+","+str(term1_perc)+")" 
+           mycur.execute(sqlquery)
+           mycon.commit()
+     
+       elif choice==2:
+           schno=int(input("Enter your scholar no.:"))
+           subject1_th=int(input("Enter your subject1 theory marks:"))
+           subject1_pl=int(input("Enter your subject1 marks:"))
+           subject1_total=subject1_th+subject1_pl
+           subject2_th=int(input("Enter your subject2 theory marks:"))
+           subject2_pl=int(input("Enter your subject2practical marks:"))
+           subject2_total=subject2_th+subject2_pl
+           subject3_th=int(input("Enter your subject3 theory marks:"))
+           subject3_pl=int(input("Enter your subject3 practical marks:"))
+           subject3_total=subject3_th+subject3_pl
+           subject4_th=int(input("Enter your subject4 theory marks:"))
+           subject4_pl=int(input("Enter your subject4 practical marks:"))
+           subject4_total=subject4_th+subject4_pl
+           subject5_th=int(input("Enter your subject5 theory marks:"))
+           subject5_pl=int(input("Enter your subject5 practical marks:"))
+           subject5_total=subject5_th+subject5_pl
+           totalmarks=subject1_total+subject2_total+subject3_total+subject4_total+subject5_total
+           term2_perc=totalmarks//5
+           sqlquery="insert into term2 value("+str(schno)+","+str(subject1_pl)+","+str(subject1_th)+","+str(subject2_pl)+","+str(subject2_th)+","+str(subject3_pl)+","+str(subject3_th)+","+str(subject4_pl)+","+str(subject4_th)+","+str(subject5_pl)+","+str(subject5_th)+","+str(term2_perc)+")"
+           mycur.execute(sqlquery)
+           mycon.commit()
+           
+       elif choice==3:
+           schno=int(input("Enter your scholar no.:"))
+           subject1_th=int(input("Enter your subject1 theory marks:"))
+           subject1_pl=int(input("Enter your subject1 marks:"))
+           subject1_total=subject1_th+subject1_pl
+           subject2_th=int(input("Enter your subject2 theory marks:"))
+           subject2_pl=int(input("Enter your subject2practical marks:"))
+           subject2_total=subject2_th+subject2_pl
+           subject3_th=int(input("Enter your subject3 theory marks:"))
+           subject3_pl=int(input("Enter your subject3 practical marks:"))
+           subject3_total=subject3_th+subject3_pl
+           subject4_th=int(input("Enter your subject4 theory marks:"))
+           subject4_pl=int(input("Enter your subject4 practical marks:"))
+           subject4_total=subject4_th+subject4_pl
+           subject5_th=int(input("Enter your subject5 theory marks:"))
+           subject5_pl=int(input("Enter your subject5 practical marks:"))
+           subject5_total=subject5_th+subject5_pl
+           totalmarks=subject1_total+subject2_total+subject3_total+subject4_total+subject5_total
+           halfyearly_perc=totalmarks//5
+           sqlquery="insert into halfyearly value("+str(schno)+","+str(subject1_pl)+","+str(subject1_th)+","+str(subject2_pl)+","+str(subject2_th)+","+str(subject3_pl)+","+str(subject3_th)+","+str(subject4_pl)+","+str(subject4_th)+","+str(subject5_pl)+","+str(subject5_th)+","+str(halfyearly_perc)+")"
+           mycur.execute(sqlquery)
+           mycon.commit()
+          
+       elif choice==4:
+           schno=int(input("Enter your scholar no.:"))
+           subject1_th=int(input("Enter your subject1 theory marks:"))
+           subject1_pl=int(input("Enter your subject1 marks:"))
+           subject1_total=subject1_th+subject1_pl
+           subject2_th=int(input("Enter your subject2 theory marks:"))
+           subject2_pl=int(input("Enter your subject2practical marks:"))
+           subject2_total=subject2_th+subject2_pl
+           subject3_th=int(input("Enter your subject3 theory marks:"))
+           subject3_pl=int(input("Enter your subject3 practical marks:"))
+           subject3_total=subject3_th+subject3_pl
+           subject4_th=int(input("Enter your subject4 theory marks:"))
+           subject4_pl=int(input("Enter your subject4 practical marks:"))
+           subject4_total=subject4_th+subject4_pl
+           subject5_th=int(input("Enter your subject5 theory marks:"))
+           subject5_pl=int(input("Enter your subject5 practical marks:"))
+           subject5_total=subject5_th+subject5_pl
+           totalmarks=subject1_total+subject2_total+subject3_total+subject4_total+subject5_total
+           annual_perc=totalmarks//5
+           sqlquery="insert into annual value("+str(schno)+","+str(subject1_pl)+","+str(subject1_th)+","+str(subject2_pl)+","+str(subject2_th)+","+str(subject3_pl)+","+str(subject3_th)+","+str(subject4_pl)+","+str(subject4_th)+","+str(subject5_pl)+","+str(subject5_th)+","+str(annual_perc)+")"
+           mycur.execute(sqlquery)
+           mycon.commit()
+           mycon.close()
+           
+
+def marksheet():
+    mycon=mysql.connect(host='localhost',user='root',passwd='mysql',database='school',charset='utf8')
+    if mycon.is_connected()==False:  #checking that the connection stab or connection refused by Database Server!!!")
+        print("Database is not ready!!!")
+        return
+    schno=input("Enter Scholar number to get Marksheet : ")
+    mycur=mycon.cursor()
+    sqlquery="select name,standard,section,father_name,subject1,subject2,subject3,subject4,subject5,t1.*,t2.*,t3.*,t4.* from students s,term1 t1,term2 t2,halfyearly t3,annual t4  where s.schno=t1.schno and s.schno=t2.schno and s.schno=t3.schno and s.schno=t4.schno and s.schno="+schno
+    mycur.execute(sqlquery)
+    data=mycur.fetchall()
+    if data==[]:
+        print("Student not found or still all exams are not given!!!")
+        input("Press Enter to continue...")
+        return
+    name=data[0][0]
+    standard=data[0][1]
+    section=data[0][2]
+    fname=data[0][3]
+    print("-"*101)
+    print("\t\t\t\t\tMarksheet")
+    print("-"*101)
+    print()
+    print("Name        : {0:<25s}".format(name),end=" ")
+    print("Class : {0:>4d}".format(standard),end=" ")
+    print("\t\tSection : {0:>4s}".format(section))
+    print("Father Name : {0:<25s}".format(fname))
+    print("-"*101)
+    print("s.no.\tSubject\t\tTerm1\t\tTerm2\t\tHalf Yearly\t\tAnnual\t\tTotal")
+    print("-"*101)
+    
+    for i in range(4,9):
+        sno=i-3
+        subject=data[0][i]
+        t1sub=int(data[0][6+i])+int(data[0][7+i])
+        t2sub=int(data[0][6+12+i])+int(data[0][7+12+i])
+        t3sub=int(data[0][6+12+12+i])+int(data[0][7+12+12+i])
+        t4sub=int(data[0][6+12+12+12+i])+int(data[0][7+12+12+12+i])
+        gtotal=t1sub+t2sub+t3sub+t4sub
+        
+        print("{0:>3d}   {1:<20s}{2:>4.2f}{3:>15.2f}{4:>18.2f}{5:>24f}{6:>14.2f}".format(sno,subject,t1sub,t2sub,t3sub,t4sub,gtotal))
+        print()
+    input("Press Enter to Continue...")
+    mycon.close()    
+    
+         
+#main
+print("\n")
+print("'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''")
+print("          WELCOME TO THE SCHOOL MANAGEMENT SYSTEM          ")
+username=input("Enter your username:")
+password=input("Enter your password:")
+correct_username='rkk'
+correct_password='rkkgps'
+if username==correct_username:
+   if password==correct_password:
+      print("Password is correct press enter to continue")
+      
+      ch=0
+      while ch!=11:
+          print("               MENU               ")
+          print("~"*35)
+          print("|         1.ADD STUDENTS            |")
+          print("|         2.SHOW STUDENTS           |")
+          print("|         3.UPDATE STUDENTS         |")
+          print("|         4.ISSUE TC                |")
+          print("|         5.ADD TEACHERS            |")
+          print("|         6.SHOW TEACHERS           |")
+          print("|         7.UPDATE TEACHERS         |")
+          print("|         8.ISSUE TC TEACHERS       |")
+          print("|         9.ADD MARKS               |")
+          print("|         10.MARKSHEET              |")
+          print("|         11.EXIT                   |")
+          print("~"*35)
+      
+          ch=int(input("ENTER YOUR CHOICE:"))
+          if ch==1:
+              add_students()
+          elif ch==2:
+              show_students()
+          elif ch==3:
+              update_students()
+          elif ch==4:
+              issue_TC()
+          elif ch==5:
+              add_teachers()
+          elif ch==6:
+              show_teachers()
+          elif ch==7:
+              update_teachers()
+          elif ch==8:
+              issue_TC_teacher()
+          elif ch==9: 
+              add_marks()
+          elif ch==10:
+              marksheet()
+          elif ch==11:
+              print("This program is devloped by Iram Kamdar :)")
+          else:
+              print("~"*30)
+              print("INVALID CHOICES")
+              print("~"*30)
+              input("press Enter to bye bye.....")
+
+   else:
+       print('Password incorrect')
+else:
+    print('User does not exist')
+    print('Access denied')
+
+
+
+
